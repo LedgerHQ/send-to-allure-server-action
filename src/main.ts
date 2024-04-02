@@ -1,4 +1,4 @@
-import { error, getInput, info, setFailed, setOutput } from "@actions/core";
+import { error, getInput, info, setFailed, setOutput, summary } from "@actions/core";
 import archiver from "archiver";
 import path from "path";
 import fs from "fs";
@@ -103,7 +103,7 @@ async function runAction() {
   info(
     "========================================================================",
   );
-
+  summary.addRaw(`ALLURE REPORT URL: ${generateReport.url}`, true);
   setOutput("report-url", generateReport.url);
 }
 
