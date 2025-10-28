@@ -96,6 +96,14 @@ async function runAction() {
 
   info("Report generation done");
 
+  // Try to explicitly delete the raw results if still present
+  try {
+    await api.delete(`api/result/${results_id}`);
+    info(`Deleted raw results ${results_id}`);
+  } catch (err) {
+    error(`Could not delete raw results: ${(err as Error).message}`);
+  }
+
   info(
     "========================================================================",
   );
