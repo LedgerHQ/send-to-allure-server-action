@@ -65668,13 +65668,24 @@ async function runAction() {
         deleteResults: true,
     });
     (0,core.info)("Report generation done");
+    (0,core.info)("deleteResults is true");
     // Try to explicitly delete the raw results if still present
+    // Note: Results may already be deleted if deleteResults: true was used above
     try {
         await api.delete(`api/result/${results_id}`);
         (0,core.info)(`Deleted raw results ${results_id}`);
     }
     catch (err) {
-        (0,core.error)(`Could not delete raw results: ${err.message}`);
+        // If results are already deleted (404/500), that's fine - just log as info
+        const axiosError = err;
+        const statusCode = axiosError.response?.status;
+        if (statusCode === 404 || statusCode === 500) {
+            (0,core.info)(`Raw results ${results_id} already deleted or not found (status: ${statusCode})`);
+        }
+        else {
+            // For other errors, log as warning but don't fail the action
+            (0,core.info)(`Could not delete raw results ${results_id}: ${err.message}`);
+        }
     }
     (0,core.info)("========================================================================");
     (0,core.info)(`REPORT URL: ${generateReport.url}`);

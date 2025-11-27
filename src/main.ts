@@ -15,7 +15,7 @@ async function compress(srcFolder: string, zipFilePath: string): Promise<void> {
     await fs.promises.access(srcFolder, fs.constants.R_OK | fs.constants.W_OK);
     await fs.promises.access(
       targetBasePath,
-      fs.constants.R_OK | fs.constants.W_OK,
+      fs.constants.R_OK | fs.constants.W_OK
     );
   } catch (e) {
     if (e instanceof Error) {
@@ -41,7 +41,7 @@ async function compress(srcFolder: string, zipFilePath: string): Promise<void> {
 async function runAction() {
   // http://username:password@example.com/
   const allureServerUrl = new URL(
-    getInput("allure-server-url", { required: true }),
+    getInput("allure-server-url", { required: true })
   );
   // getInput returns empty string in case no input passed, which is fine for us
   allureServerUrl.username = getInput("username");
@@ -49,7 +49,7 @@ async function runAction() {
 
   await compress(
     getInput("allure-results", { required: true }),
-    "./allure-results.zip",
+    "./allure-results.zip"
   );
   info(`Created compressed ./allure-results.zip`);
 
@@ -68,7 +68,7 @@ async function runAction() {
     form,
     {
       headers: form.getHeaders(),
-    },
+    }
   );
 
   info(`Upload done`);
@@ -91,25 +91,39 @@ async function runAction() {
       },
       results: [results_id],
       deleteResults: true,
-    },
+    }
   );
 
   info("Report generation done");
+  info("deleteResults is true");
 
   // Try to explicitly delete the raw results if still present
+  // Note: Results may already be deleted if deleteResults: true was used above
   try {
     await api.delete(`api/result/${results_id}`);
     info(`Deleted raw results ${results_id}`);
   } catch (err) {
-    error(`Could not delete raw results: ${(err as Error).message}`);
+    // If results are already deleted (404/500), that's fine - just log as info
+    const axiosError = err as { response?: { status?: number } };
+    const statusCode = axiosError.response?.status;
+    if (statusCode === 404 || statusCode === 500) {
+      info(
+        `Raw results ${results_id} already deleted or not found (status: ${statusCode})`
+      );
+    } else {
+      // For other errors, log as warning but don't fail the action
+      info(
+        `Could not delete raw results ${results_id}: ${(err as Error).message}`
+      );
+    }
   }
 
   info(
-    "========================================================================",
+    "========================================================================"
   );
   info(`REPORT URL: ${generateReport.url}`);
   info(
-    "========================================================================",
+    "========================================================================"
   );
 
   setOutput("report-url", generateReport.url);
