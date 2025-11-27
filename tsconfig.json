@@ -1,18 +1,10 @@
 {
-    "extends": "@tsconfig/node16/tsconfig.json",
-    "include": [
-      "./src/*.ts"
-    ],
-    "exclude": [
-      "dist",
-      "node_modules"
-    ],
-    "compilerOptions": {
-      "typeRoots": [
-        "./types",
-        "node_modules/@types"
-      ],
-      "moduleResolution": "node16",
-      "outDir": "./lib"
-    }
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "include": ["./src/*.ts"],
+  "exclude": ["dist", "node_modules"],
+  "compilerOptions": {
+    "typeRoots": ["./types", "node_modules/@types"],
+    "moduleResolution": "nodenext",
+    "outDir": "./lib"
   }
+}
