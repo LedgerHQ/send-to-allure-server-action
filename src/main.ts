@@ -90,12 +90,12 @@ async function runAction() {
         },
       },
       results: [results_id],
-      deleteResults: true,
+      deleteResults: false,
     }
   );
 
   info("Report generation done");
-  info("deleteResults is true");
+  info("deleteResults is false");
 
   // Try to explicitly delete the raw results if still present
   // Note: Results may already be deleted if deleteResults: true was used above
