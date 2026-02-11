@@ -20,7 +20,7 @@
     "@vercel/ncc": "^0.36.1",
     "archiver": "5.3.1",
     "axios": "^1.6.7",
-    "form-data": "4.0.0"
+    "form-data": "4.0.4"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
